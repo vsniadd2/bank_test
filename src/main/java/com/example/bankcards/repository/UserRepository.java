@@ -20,5 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
-    Page<User> findAll(Pageable pageable); //todo n+1 у меня тут проблема
+    @EntityGraph(attributePaths = "roles")
+    Page<User> findAll(Pageable pageable);
 }
