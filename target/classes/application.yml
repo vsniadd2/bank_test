@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+
+spring:
+  application:
+    name: web
+
+  datasource:
+    url: jdbc:postgresql://localhost:15432/effective_db
+    username: postgres
+    password: 4242
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    repair-on-migrate: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
+application:
+  security:
+    jwt:
+      secret-key: b9901c31045cdaa3132d49ae24321f6e279608e9d57757931151995fbce2fc17
+      expiration: 1800000
+      refresh-token:
+        expiration: 604800000
+  encryption:
+    card-secret: my-secret-key-12345678901234567890
+
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    ports:
+      - "15432:5432"
+    environment:
+      - POSTGRES_DB=effective_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=4242
+

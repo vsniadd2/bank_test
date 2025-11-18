@@ -1,0 +1,3 @@
+ALTER TABLE cards
+ADD COLUMN IF NOT EXISTS cvv_encrypted VARCHAR(255);
+
