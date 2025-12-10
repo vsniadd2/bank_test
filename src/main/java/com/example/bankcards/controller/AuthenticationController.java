@@ -4,8 +4,6 @@ import com.example.bankcards.dto.auth.AuthenticationRequest;
 import com.example.bankcards.dto.auth.AuthenticationResponse;
 import com.example.bankcards.dto.auth.RegistrationRequest;
 import com.example.bankcards.service.AuthenticationService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +27,6 @@ public class AuthenticationController {
      * @param request данные для регистрации
      * @return ответ с токенами аутентификации
      */
-    @Operation(
-            summary = "Регистрация нового пользователя",
-            description = "Создаёт нового пользователя и возвращает токены аутентификации"
-    )
-    @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован")
     @PostMapping("/registration")
     public CompletableFuture<ResponseEntity<AuthenticationResponse>> registration(@Valid @RequestBody RegistrationRequest request) {
         return authenticationService.registerAsync(request)
@@ -50,11 +43,6 @@ public class AuthenticationController {
      * @param authenticationRequest данные для аутентификации
      * @return ответ с токенами аутентификации
      */
-    @Operation(
-            summary = "Аутентификация пользователя",
-            description = "Проверяет учетные данные и возвращает токены аутентификации"
-    )
-    @ApiResponse(responseCode = "200", description = "Аутентификация прошла успешно")
     @PostMapping("/authenticate")
     public CompletableFuture<ResponseEntity<AuthenticationResponse>> authenticate(
             @Valid @RequestBody AuthenticationRequest authenticationRequest) {
@@ -72,11 +60,6 @@ public class AuthenticationController {
      * @param authHeader заголовок с токеном авторизации
      * @return ответ с новыми токенами аутентификации
      */
-    @Operation(
-            summary = "Обновление токена доступа",
-            description = "Принимает заголовок авторизации и возвращает новые токены"
-    )
-    @ApiResponse(responseCode = "200", description = "Токен успешно обновлён")
     @PostMapping("/refresh-token")
     public CompletableFuture<ResponseEntity<AuthenticationResponse>> refreshToken(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader

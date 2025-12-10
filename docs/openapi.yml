@@ -1,0 +1,542 @@
+openapi: 3.0.3
+info:
+  title: Bank Rest App
+  version: 1.0
+  description: Banking REST API
+  contact:
+    name: Rodnenkov Ivan
+    email: steamivana2@gmail.com
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/v1/auth/registration:
+    post:
+      summary: Регистрация нового пользователя
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+
+  /api/v1/auth/authenticate:
+    post:
+      summary: Аутентификация пользователя
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+
+  /api/v1/auth/refresh-token:
+    post:
+      summary: Обновление токена доступа
+      tags: [Authentication]
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+
+  /api/v1/card:
+    post:
+      summary: Создать случайную карту
+      tags: [Cards]
+      security: [bearerAuth: []]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDto'
+    get:
+      summary: Получить карты пользователя
+      tags: [Cards]
+      security: [bearerAuth: []]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+
+  /api/v1/card/transfer:
+    post:
+      summary: Перевод между картами
+      tags: [Cards]
+      security: [bearerAuth: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoneyTransactionRequestDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoneyTransactionResponseDto'
+
+  /api/v1/card/deposit:
+    post:
+      summary: Пополнение карты
+      tags: [Cards]
+      security: [bearerAuth: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositRequestDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepositResponseDto'
+    get:
+      summary: Получить баланс карты
+      tags: [Cards]
+      security: [bearerAuth: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardId:
+                  type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponseDto'
+
+  /api/v1/card/block-card:
+    post:
+      summary: Блокировка карты
+      tags: [Cards]
+      security: [bearerAuth: []]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardId:
+                  type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponseDto'
+
+  /api/v1/admin/all-cards:
+    get:
+      summary: Получить все карты
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+
+  /api/v1/admin/cards/{cardId}/approve-block:
+    post:
+      summary: Одобрить блокировку карты
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponseDto'
+
+  /api/v1/admin/users:
+    get:
+      summary: Получить всех пользователей
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+
+  /api/v1/admin/users/{userId}:
+    get:
+      summary: Получить пользователя по ID
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDto'
+
+  /api/v1/admin/users/{userId}/block:
+    patch:
+      summary: Блокировать пользователя
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDto'
+
+  /api/v1/admin/users/{userId}/unblock:
+    patch:
+      summary: Разблокировать пользователя
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDto'
+
+  /api/v1/admin/users/{userId}/cards:
+    post:
+      summary: Создать карту
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDto'
+
+  /api/v1/admin/users/{userId}/cards/{cardId}/cvv:
+    patch:
+      summary: Обновить CVV карты
+      tags: [Admin]
+      security: [bearerAuth: []]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardCvvUpdateResponseDto'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RegistrationRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 4
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+
+    AuthenticationRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+
+    AuthenticationResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        success:
+          type: boolean
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserDto'
+        timestamp:
+          type: string
+          format: date-time
+
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+
+    CardDto:
+      type: object
+      properties:
+        card_number:
+          type: string
+        expiry_date:
+          type: string
+        cvv:
+          type: string
+
+    CardResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        masked_number:
+          type: string
+        expiration_date:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, BLOCKED, BLOCK_REQUESTED, EXPIRED]
+        balance:
+          type: number
+
+    Page:
+      type: object
+      properties:
+        content:
+          type: array
+        total_elements:
+          type: integer
+        total_pages:
+          type: integer
+        number:
+          type: integer
+        size:
+          type: integer
+
+    MoneyTransactionRequestDto:
+      type: object
+      required: [from_card_id, to_card_id, amount]
+      properties:
+        from_card_id:
+          type: integer
+        to_card_id:
+          type: integer
+        message:
+          type: string
+        amount:
+          type: number
+          minimum: 0.01
+
+    MoneyTransactionResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        from_card_id:
+          type: integer
+        from_card_mask:
+          type: string
+        to_card_id:
+          type: integer
+        to_card_mask:
+          type: string
+        amount:
+          type: number
+        from_card_balance:
+          type: number
+        to_card_balance:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+
+    DepositRequestDto:
+      type: object
+      required: [card_id, amount]
+      properties:
+        card_id:
+          type: integer
+        amount:
+          type: number
+          minimum: 0.01
+
+    DepositResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        card_id:
+          type: integer
+        card_mask:
+          type: string
+        amount:
+          type: number
+        new_balance:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+
+    BalanceResponseDto:
+      type: object
+      properties:
+        card_id:
+          type: integer
+        card_mask:
+          type: string
+        balance:
+          type: number
+
+    AdminUserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        is_active:
+          type: boolean
+        date_time_of_created:
+          type: string
+          format: date-time
+
+    CardCvvUpdateResponseDto:
+      type: object
+      properties:
+        card_id:
+          type: integer
+        card_mask:
+          type: string
+        new_cvv:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
