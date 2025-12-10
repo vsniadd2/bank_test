@@ -6,6 +6,12 @@ import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO для запроса пополнения карты
+ *
+ * @param cardId идентификатор карты
+ * @param amount сумма пополнения
+ */
 public record DepositRequestDto(
         @NotNull(message = "Required field")
         Long cardId,

@@ -4,6 +4,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * DTO для запроса регистрации
+ *
+ * @param username имя пользователя
+ * @param email email пользователя
+ * @param password пароль пользователя
+ */
 public record RegistrationRequest(
         @NotBlank(message = "Username is required")
         @Size(min = 4,message = "Username must be at least 4 characters")

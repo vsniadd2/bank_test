@@ -39,6 +39,12 @@ public class CardService {
     private final CardMapper cardMapper;
     private final Random random = new Random();
 
+    /**
+     * Генерирует случайную карту для пользователя
+     *
+     * @param userDetails данные пользователя
+     * @return информация о созданной карте
+     */
     public CardDto generateRandomCard(UserDetails userDetails) {
         String cardNumber = generateCardNumber();
         String expiryDateStr = generateExpiryDate();
@@ -67,6 +73,12 @@ public class CardService {
         return new CardDto(cardNumber, expiryDateStr, cvv);
     }
 
+    /**
+     * Создает карту для указанного пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @return информация о созданной карте
+     */
     @Transactional
     public CardDto createCardForUser(Long userId) {
         User user = userRepository.findById(userId)
@@ -95,6 +107,13 @@ public class CardService {
         return new CardDto(cardNumber, expiryDateStr, cvv);
     }
 
+    /**
+     * Обновляет CVV код карты
+     *
+     * @param userId идентификатор пользователя
+     * @param cardId идентификатор карты
+     * @return информация об обновленном CVV коде
+     */
     @Transactional
     public CardCvvUpdateResponseDto updateCardCvv(Long userId, Long cardId) {
         User user = userRepository.findById(userId)
@@ -117,6 +136,13 @@ public class CardService {
                 .build();
     }
 
+    /**
+     * Получает все карты пользователя с пагинацией
+     *
+     * @param userDetails данные пользователя
+     * @param page номер страницы
+     * @return страница с картами пользователя
+     */
     @Transactional(readOnly = true)
     public Page<CardResponseDto> getAllCardsByUserId(@NonNull UserDetails userDetails, int page) {
         Pageable pageable = PageRequest.of(page, 2);
@@ -129,6 +155,13 @@ public class CardService {
         return cardsPage.map(cardMapper::toDto);
     }
 
+    /**
+     * Выполняет перевод между картами
+     *
+     * @param request данные для перевода
+     * @param userDetails данные пользователя
+     * @return информация о выполненной транзакции
+     */
     @Transactional
     public MoneyTransactionResponseDto transactionBetweenCards(
             MoneyTransactionRequestDto request,
@@ -196,6 +229,13 @@ public class CardService {
                 .build();
     }
 
+    /**
+     * Пополняет баланс карты
+     *
+     * @param request данные для пополнения
+     * @param userDetails данные пользователя
+     * @return информация о пополнении баланса
+     */
     @Transactional
     public DepositResponseDto depositToCard(
             DepositRequestDto request,
@@ -234,6 +274,13 @@ public class CardService {
                 .build();
     }
 
+    /**
+     * Получает баланс карты
+     *
+     * @param cardId идентификатор карты
+     * @param userDetails данные пользователя
+     * @return информация о балансе карты
+     */
     @Transactional(readOnly = true)
     public BalanceResponseDto getCardBalance(Long cardId, UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())
@@ -249,6 +296,13 @@ public class CardService {
                 .build();
     }
 
+    /**
+     * Блокирует карту (создает запрос на блокировку)
+     *
+     * @param cardId идентификатор карты
+     * @param userDetails данные пользователя
+     * @return информация о карте с запросом на блокировку
+     */
     @Transactional
     public CardResponseDto blockCard(Long cardId, UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())

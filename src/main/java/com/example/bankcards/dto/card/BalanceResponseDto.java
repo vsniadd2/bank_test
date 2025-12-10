@@ -4,6 +4,13 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO для ответа с балансом карты
+ *
+ * @param cardId идентификатор карты
+ * @param cardMask замаскированный номер карты
+ * @param balance баланс карты
+ */
 @Builder
 public record BalanceResponseDto(
         Long cardId,

@@ -8,15 +8,18 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Сущность банковской карты
+ */
 @Entity
 @Table(name = "cards")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString(exclude = "user")
-@EqualsAndHashCode(exclude = "user")
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +50,11 @@ public class Card {
     @Column(name = "balance", precision = 19, scale = 2, nullable = false)
     BigDecimal balance;
 
+    /**
+     * Возвращает замаскированный номер карты
+     *
+     * @return замаскированный номер карты
+     */
     @Transient
     public String getMaskedNumber() {
         return "**** **** **** " + lastFourDigits;

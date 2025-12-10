@@ -37,6 +37,12 @@ public class AuthenticationService {
     private final UserMapper userMapper;
     private final TokenRepository tokenRepository;
 
+    /**
+     * Регистрирует нового пользователя
+     *
+     * @param request данные для регистрации
+     * @return ответ с токенами аутентификации
+     */
     @Transactional
     public AuthenticationResponse register(RegistrationRequest request) {
         validateRegister(request);
@@ -58,11 +64,23 @@ public class AuthenticationService {
         );
     }
 
+    /**
+     * Асинхронно регистрирует нового пользователя
+     *
+     * @param request данные для регистрации
+     * @return CompletableFuture с ответом аутентификации
+     */
     @Async
     public CompletableFuture<AuthenticationResponse> registerAsync(RegistrationRequest request) {
         return CompletableFuture.supplyAsync(() -> register(request));
     }
 
+    /**
+     * Аутентифицирует пользователя
+     *
+     * @param authenticationRequest данные для аутентификации
+     * @return ответ с токенами аутентификации
+     */
     @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         authenticationManager.authenticate(
@@ -87,12 +105,24 @@ public class AuthenticationService {
         );
     }
 
+    /**
+     * Асинхронно аутентифицирует пользователя
+     *
+     * @param authenticationRequest данные для аутентификации
+     * @return CompletableFuture с ответом аутентификации
+     */
     @Async
     public CompletableFuture<AuthenticationResponse> authenticateAsync(AuthenticationRequest authenticationRequest) {
         return CompletableFuture.supplyAsync(() -> authenticate(authenticationRequest));
     }
 
 
+    /**
+     * Обновляет токен доступа
+     *
+     * @param authHeader заголовок с токеном авторизации
+     * @return ответ с новыми токенами аутентификации
+     */
     @Transactional
     public AuthenticationResponse refreshToken(String authHeader) {
         validateRefreshToken(authHeader);
@@ -136,6 +166,12 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Асинхронно обновляет токен доступа
+     *
+     * @param authHeader заголовок с токеном авторизации
+     * @return CompletableFuture с ответом аутентификации
+     */
     public CompletableFuture<AuthenticationResponse> refreshTokenAsync(String authHeader) {
         return CompletableFuture.supplyAsync(() -> refreshToken(authHeader));
     }

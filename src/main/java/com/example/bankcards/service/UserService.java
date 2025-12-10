@@ -12,6 +12,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    /**
+     * Находит пользователя по email
+     *
+     * @param email email пользователя
+     * @return Optional с пользователем, если найден
+     */
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }

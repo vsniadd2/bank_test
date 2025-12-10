@@ -27,6 +27,12 @@ public class AdminService {
     private final UserMapper userMapper;
     private final CardService cardService;
 
+    /**
+     * Получает все карты с пагинацией
+     *
+     * @param page номер страницы
+     * @return страница с картами
+     */
     @Transactional(readOnly = true)
     public Page<CardResponseDto> getAllCard(int page) {
         Pageable pageable = PageRequest.of(page, 10);
@@ -35,6 +41,12 @@ public class AdminService {
         return cardPage.map(cardMapper::toDto);
     }
 
+    /**
+     * Одобряет блокировку карты
+     *
+     * @param cardId идентификатор карты
+     * @return информация о карте после одобрения блокировки
+     */
     @Transactional
     public CardResponseDto approveBlockCard(Long cardId) {
         Card card = cardRepository.findById(cardId)
@@ -52,6 +64,12 @@ public class AdminService {
         return cardMapper.toDto(card);
     }
 
+    /**
+     * Получает всех пользователей с пагинацией
+     *
+     * @param page номер страницы
+     * @return страница с пользователями
+     */
     @Transactional(readOnly = true)
     public Page<AdminUserDto> getAllUsers(int page) {
         Pageable pageable = PageRequest.of(page, 100);
@@ -60,6 +78,12 @@ public class AdminService {
         return userPage.map(userMapper::toAdminDto);
     }
 
+    /**
+     * Получает пользователя по идентификатору
+     *
+     * @param id идентификатор пользователя
+     * @return информация о пользователе
+     */
     @Transactional(readOnly = true)
     public AdminUserDto getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -67,6 +91,12 @@ public class AdminService {
         return userMapper.toAdminDto(user);
     }
 
+    /**
+     * Блокирует пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @return информация о заблокированном пользователе
+     */
     @Transactional
     public AdminUserDto blockUser(Long userId) {
         User user = userRepository.findById(userId)
@@ -81,6 +111,12 @@ public class AdminService {
         return userMapper.toAdminDto(user);
     }
 
+    /**
+     * Разблокирует пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @return информация о разблокированном пользователе
+     */
     @Transactional
     public AdminUserDto unblockUser(Long userId) {
 
@@ -96,11 +132,24 @@ public class AdminService {
         return userMapper.toAdminDto(user);
     }
 
+    /**
+     * Создает новую карту для пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @return информация о созданной карте
+     */
     @Transactional
     public CardDto createCard(Long userId) {
         return cardService.createCardForUser(userId);
     }
 
+    /**
+     * Обновляет CVV код карты
+     *
+     * @param userId идентификатор пользователя
+     * @param cardId идентификатор карты
+     * @return информация об обновленном CVV коде
+     */
     @Transactional
     public CardCvvUpdateResponseDto updateCardCvv(Long userId, Long cardId) {
         return cardService.updateCardCvv(userId, cardId);

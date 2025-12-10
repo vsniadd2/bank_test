@@ -7,6 +7,14 @@ import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO для запроса перевода между картами
+ *
+ * @param fromCardId идентификатор карты отправителя
+ * @param toCardId идентификатор карты получателя
+ * @param message сообщение к переводу (опционально)
+ * @param amount сумма перевода
+ */
 public record MoneyTransactionRequestDto(
         @NotNull(message = "Required field")
         Long fromCardId,

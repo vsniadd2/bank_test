@@ -26,6 +26,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 
+/**
+ * Конфигурация безопасности Spring Security
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -38,6 +41,13 @@ public class SecurityConfiguration {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomLogoutHandler customLogoutHandler;
 
+    /**
+     * Настраивает цепочку фильтров безопасности
+     *
+     * @param http объект HttpSecurity для настройки
+     * @return настроенная цепочка фильтров безопасности
+     * @throws Exception при ошибке настройки
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -67,6 +77,11 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Настраивает CORS конфигурацию
+     *
+     * @return источник конфигурации CORS
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -89,6 +104,11 @@ public class SecurityConfiguration {
         return source;
     }
 
+    /**
+     * Настраивает провайдер аутентификации
+     *
+     * @return провайдер аутентификации
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -97,11 +117,23 @@ public class SecurityConfiguration {
         return provider;
     }
 
+    /**
+     * Настраивает кодировщик паролей
+     *
+     * @return BCrypt кодировщик паролей
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Настраивает менеджер аутентификации
+     *
+     * @param authenticationConfiguration конфигурация аутентификации
+     * @return менеджер аутентификации
+     * @throws Exception при ошибке настройки
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
